@@ -8,6 +8,8 @@ const searchUrl = `https://api.unsplash.com/search/photos/`
 
 function App() {
   const [loading, setLoading] = useState(false)
+  const [photos, setPhotos] = useState([])
+
   const fetchImages = async () => {
     setLoading(true)
     let url
@@ -15,8 +17,8 @@ function App() {
     try {
       const res = await fetch(url)
       const data = await res.json()
+      setPhotos(data)
       setLoading(false)
-      console.log(data)
     } catch (error) {
       setLoading(false)
       console.log(error)
@@ -27,7 +29,30 @@ function App() {
     fetchImages()
   }, [])
 
-  return <h2>stock photos starter</h2>
+  const handleSubmit = (e) => {
+    e.preventDefault()
+  }
+
+  return (
+    <main>
+      <section className="search">
+        <form className="search-form">
+          <input type="text" placeholder="search" className="form-input" />
+          <button type="submit" className="submit-btn" onClick={handleSubmit}>
+            <FaSearch />
+          </button>
+        </form>
+      </section>
+      <section className="photos">
+        <div className="photos-center">
+          {photos.map((img) => {
+            return <Photo key={img.id} {...img}></Photo>
+          })}
+        </div>
+        {loading && <h2 className="loading">Loading...</h2>}
+      </section>
+    </main>
+  )
 }
 
 export default App
